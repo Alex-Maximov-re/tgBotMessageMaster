@@ -16,10 +16,27 @@ export default {
     const from = decodeHeader(message.headers.get("from") || message.from || "");
     const rawBytes = new Uint8Array(await new Response(message.raw).arrayBuffer());
     const raw = bytesToLatin1(rawBytes);
-    const text = extractVisibleText(raw);
+    let text = "";
+    try {
+      text = extractVisibleText(raw);
+    } catch (error) {
+      console.error("Не удалось разобрать письмо:", error);
+      text = "(текст письма разобрать не удалось)";
+    }
     const letter = [`Новое письмо`, `От: ${from}`, `Тема: ${subject}`, "", text || "(пустое письмо)"].join("\n");
-    if (env.FORWARD_TO) await message.forward(env.FORWARD_TO);
-    await sendTelegram(env, letter);
+    try {
+      await sendTelegram(env, letter);
+    } catch (error) {
+      console.error("Telegram не принял сообщение:", error);
+      throw error;
+    }
+    if (env.FORWARD_TO) {
+      try {
+        await message.forward(env.FORWARD_TO);
+      } catch (error) {
+        console.error("Копия на почту не ушла:", error);
+      }
+    }
   },
 };
 
@@ -130,7 +147,13 @@ function splitMultipart(bytes, boundary) {
 
 function base64ToBytes(data) {
   const clean = data.replace(/\s/g, "");
-  const binary = atob(clean);
+  let binary;
+  try {
+    binary = atob(clean);
+  } catch (error) {
+    console.error("Битая base64-часть письма:", error);
+    return latin1Bytes(data);
+  }
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
   return bytes;
