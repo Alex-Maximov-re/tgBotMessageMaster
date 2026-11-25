@@ -5,3 +5,4 @@ compatibility_date = "2026-11-25"
 # Секреты задаются в кабинете Worker, не в этом файле:
 # TELEGRAM_BOT_TOKEN
 # TELEGRAM_CHAT_ID
+# FORWARD_TO — обычный почтовый адрес, куда слать копию письма

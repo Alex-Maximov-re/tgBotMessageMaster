@@ -18,6 +18,7 @@ export default {
     const raw = bytesToLatin1(rawBytes);
     const text = extractVisibleText(raw);
     const letter = [`Новое письмо`, `От: ${from}`, `Тема: ${subject}`, "", text || "(пустое письмо)"].join("\n");
+    if (env.FORWARD_TO) await message.forward(env.FORWARD_TO);
     await sendTelegram(env, letter);
   },
 };
