@@ -1,4 +1,7 @@
 .env
+.dev.vars
+worker/.dev.vars
+worker/node_modules/
 .venv/
 venv/
 __pycache__/

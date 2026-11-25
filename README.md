@@ -33,6 +33,16 @@ python -m app mail
 
 Письма, которые уже лежали в ящике, при первом запуске не пересылаются. Чтобы получить и их, поставьте `MAIL_NOTIFY_EXISTING=true`. Повтор одного письма не шлётся: id хранятся в `data/state.json`. Письма в ящике остаются непрочитанными.
 
+## Cloudflare Worker
+
+Письмо на адрес домена принимает Cloudflare и сразу отправляет его в Telegram. Компьютер для этого держать включённым не нужно. Код лежит в `worker/src/index.js`.
+
+1. В Cloudflare создайте Worker и вставьте этот файл.
+2. В настройках Worker добавьте секреты `TELEGRAM_BOT_TOKEN` и `TELEGRAM_CHAT_ID`. Токен в репозиторий не кладётся.
+3. В Email Routing создайте адрес `avito@alexmaxavitomessageme.indevs.in` и выберите действие **Send to Worker**.
+4. В Авито укажите этот адрес для уведомлений о сообщениях. Либо настройте пересылку писем Авито с обычной почты на этот адрес.
+5. Напишите боту `/start`, иначе Telegram не даст ему писать вам первым.
+
 ## API Авито
 
 Второй вариант — официальный вебхук мессенджера. Нужен платный тариф с API и ключи из раздела [Для профессионалов → API](https://www.avito.ru/professionals/api). Документация: [developers.avito.ru](https://developers.avito.ru/api-catalog/messenger/documentation).

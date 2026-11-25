@@ -1,0 +1,7 @@
+name = "avito-mail-to-telegram"
+main = "src/index.js"
+compatibility_date = "2026-11-25"
+
+# Секреты задаются в кабинете Worker, не в этом файле:
+# TELEGRAM_BOT_TOKEN
+# TELEGRAM_CHAT_ID
